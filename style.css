@@ -1,0 +1,155 @@
+body {
+  min-height: 100vh;
+  background-color: #1a1a1a;
+  font-family: 'Georgia', serif; /* Real book typography */
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+:root {
+  --width: min(1000px, 90vw);
+  --height: min(700px, 80vh);
+  --paper-color: #fdfbf7;
+}
+
+.container {
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  perspective: 2000px; /* New: 3D Perspective */
+}
+
+.book-container {
+  width: var(--width);
+  height: var(--height);
+  position: relative;
+  background: #333;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,0.5);
+  cursor: grab;
+  touch-action: none;
+  border-radius: 4px; /* Hardcover edge */
+}
+
+.book-container:active {
+  cursor: grabbing;
+}
+
+/* Procedural Paper Texture & Typography */
+.page, .flap-content {
+  width: calc(var(--width) / 2);
+  height: var(--height);
+  position: absolute;
+  top: 0;
+  padding: 50px 40px;
+  box-sizing: border-box;
+  background-color: var(--paper-color);
+  background-image: radial-gradient(circle, rgba(0,0,0,0.02) 1px, transparent 1px);
+  background-size: 10px 10px;
+  user-select: none;
+  line-height: 1.6;
+  color: #2c2c2c;
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.05);
+}
+
+/* Drop Caps for realistic book feel */
+.page h2 + p::first-letter, .flap-content h2 + p::first-letter {
+  font-size: 3em;
+  float: left;
+  margin-top: 0.1em;
+  margin-right: 0.1em;
+  line-height: 0.8;
+  color: #111;
+}
+
+#left-front, #left-under {
+  left: 0;
+  background-image: linear-gradient(to left, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 10%), radial-gradient(circle, rgba(0,0,0,0.02) 1px, transparent 1px);
+  border-radius: 4px 0 0 4px;
+}
+
+#right-front, #right-under {
+  left: 50%;
+  background-image: linear-gradient(to right, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 10%), radial-gradient(circle, rgba(0,0,0,0.02) 1px, transparent 1px);
+  border-left: 1px solid rgba(0,0,0,0.1);
+  border-radius: 0 4px 4px 0;
+}
+
+.front-page {
+  z-index: 2;
+}
+
+.flap {
+  width: var(--width);
+  height: var(--height);
+  position: absolute;
+  top: 0; left: 0;
+  z-index: 5;
+  filter: drop-shadow(0px 10px 20px rgba(0,0,0,0.5)); /* Enhanced shadow */
+  pointer-events: none;
+  display: none;
+}
+
+/* Dynamic Shadows inside the fold */
+.fold-gradient {
+  position: absolute;
+  width: calc(var(--width) * 3);
+  height: calc(var(--width) * 3);
+  left: calc(var(--width) * -1.5);
+  top: calc(var(--width) * -1.5);
+  background: linear-gradient(to right, 
+    transparent 48%, 
+    rgba(0,0,0,0.4) 50%, 
+    rgba(255,255,255,0.8) 51%, 
+    rgba(0,0,0,0.1) 55%,
+    transparent 65%
+  );
+}
+
+h2 { margin-top: 0; color: #111; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; }
+.page-number { position: absolute; bottom: 25px; color: #888; font-size: 14px; font-family: sans-serif; }
+
+#left-front .page-number, #left-under .page-number { left: 40px; }
+#right-front .page-number, #right-under .page-number { right: 40px; }
+.flap-content.is-left .page-number { left: 40px; right: auto; }
+.flap-content.is-right .page-number { right: 40px; left: auto; }
+
+/* UI Controls */
+.controls {
+  margin-top: 30px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  z-index: 10;
+}
+
+button {
+  padding: 10px 20px;
+  background: #444;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: sans-serif;
+  transition: background 0.2s;
+}
+button:hover { background: #666; }
+button:disabled { background: #222; cursor: not-allowed; color: #555; }
+
+.progress-container {
+  width: 200px;
+  height: 6px;
+  background: #222;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  background: #fff;
+  width: 0%;
+  transition: width 0.3s ease;
+}
